@@ -1,0 +1,324 @@
+apply plugin: "com.android.application"
+
+import com.android.build.OutputFile
+
+/**
+ * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
+ * and bundleReleaseJsAndAssets).
+ * These basically call `react-native bundle` with the correct arguments during the Android build
+ * cycle. By default, bundleDebugJsAndAssets is skipped, as in debug/dev mode we prefer to load the
+ * bundle directly from the development server. Below you can see all the possible configurations
+ * and their defaults. If you decide to add a configuration block, make sure to add it before the
+ * `apply from: "../../node_modules/react-native/react.gradle"` line.
+ *
+ * project.ext.react = [
+ *   // the name of the generated asset file containing your JS bundle
+ *   bundleAssetName: "index.android.bundle",
+ *
+ *   // the entry file for bundle generation
+ *   entryFile: "index.android.js",
+ *
+ *   // whether to bundle JS and assets in debug mode
+ *   bundleInDebug: false,
+ *
+ *   // whether to bundle JS and assets in release mode
+ *   bundleInRelease: true,
+ *
+ *   // whether to bundle JS and assets in another build variant (if configured).
+ *   // See http://tools.android.com/tech-docs/new-build-system/user-guide#TOC-Build-Variants
+ *   // The configuration property can be in the following formats
+ *   //         'bundleIn${productFlavor}${buildType}'
+ *   //         'bundleIn${buildType}'
+ *   // bundleInFreeDebug: true,
+ *   // bundleInPaidRelease: true,
+ *   // bundleInBeta: true,
+ *
+ *   // whether to disable dev mode in custom build variants (by default only disabled in release)
+ *   // for example: to disable dev mode in the staging build type (if configured)
+ *   devDisabledInStaging: true,
+ *   // The configuration property can be in the following formats
+ *   //         'devDisabledIn${productFlavor}${buildType}'
+ *   //         'devDisabledIn${buildType}'
+ *
+ *   // the root of your project, i.e. where "package.json" lives
+ *   root: "../../",
+ *
+ *   // where to put the JS bundle asset in debug mode
+ *   jsBundleDirDebug: "$buildDir/intermediates/assets/debug",
+ *
+ *   // where to put the JS bundle asset in release mode
+ *   jsBundleDirRelease: "$buildDir/intermediates/assets/release",
+ *
+ *   // where to put drawable resources / React Native assets, e.g. the ones you use via
+ *   // require('./image.png')), in debug mode
+ *   resourcesDirDebug: "$buildDir/intermediates/res/merged/debug",
+ *
+ *   // where to put drawable resources / React Native assets, e.g. the ones you use via
+ *   // require('./image.png')), in release mode
+ *   resourcesDirRelease: "$buildDir/intermediates/res/merged/release",
+ *
+ *   // by default the gradle tasks are skipped if none of the JS files or assets change; this means
+ *   // that we don't look at files in android/ or ios/ to determine whether the tasks are up to
+ *   // date; if you have any other folders that you want to ignore for performance reasons (gradle
+ *   // indexes the entire tree), add them here. Alternatively, if you have JS files in android/
+ *   // for example, you might want to remove it from here.
+ *   inputExcludes: ["android/**", "ios/**"],
+ *
+ *   // override which node gets called and with what additional arguments
+ *   nodeExecutableAndArgs: ["node"],
+ *
+ *   // supply additional arguments to the packager
+ *   extraPackagerArgs: []
+ * ]
+ */
+
+project.ext.react = [
+    entryFile: "index.js"
+]
+
+apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
+
+/**
+ * Set this to true to create two separate APKs instead of one:
+ *   - An APK that only works on ARM devices
+ *   - An APK that only works on x86 devices
+ * The advantage is the size of the APK is reduced by about 4MB.
+ * Upload all the APKs to the Play Store and people will download
+ * the correct one based on the CPU architecture of their device.
+ */
+def enableSeparateBuildPerCPUArchitecture = false
+
+/**
+ * Run Proguard to shrink the Java bytecode in release builds.
+ */
+def enableProguardInReleaseBuilds = false
+
+android {
+    // compileSdkVersion 27
+    // buildToolsVersion '27.0.3'
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
+    aaptOptions.cruncherEnabled = false
+    aaptOptions.useNewCruncher = false
+
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
+
+    defaultConfig {
+        applicationId 'com.slodonapp'
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName '1.0.0'
+//        manifestPlaceholders = [
+//                JPUSH_APPKEY: "4b1124ede2ac348d82043dc7",
+//                JPUSH_CHANNEL : "default"
+//        ]
+        ndk {
+            // 设置支持的SO库架构clear
+            // abiFilters "armeabi", "armeabi-v7a", "x86", 'x86_64', "arm64-v8a", "mips"
+            //  abiFilters "armeabi", "armeabi-v7a", "x86", "arm64-v8a", "mips"
+            //  abiFilters "armeabi", "armeabi-v7a", "x86", "arm64-v8a"
+            //  abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+            // abiFilters "armeabi", "armeabi-v7a", "x86", 'x86_64', "mips"
+            // abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+        //    abiFilters "armeabi-v7a","x86_64"
+           abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
+        }
+
+       packagingOptions {
+         exclude "lib/arm64-v8a/libgifimage.so"
+         exclude "lib/arm64-v8a/libimagepipeline.so"
+         exclude "lib/arm64-v8a/libstatic-webp.so"
+         exclude "lib/arm64-v8a/libucrop.so"
+       }
+        // packagingOptions {
+        //     exclude "lib/arm64-v8a/libgnustl_shared.so"
+        // }
+        vectorDrawables.useSupportLibrary = true
+        aaptOptions {cruncherEnabled = false}
+        multiDexEnabled true
+    }
+    signingConfigs {
+            release {
+                keyAlias 'dayumall1'
+                keyPassword '111111'
+                storeFile file('../keystores/dayumall.keystore')
+                storePassword '111111'
+            }
+            debug {
+                keyAlias 'dayumall1'
+                keyPassword '111111'
+                storeFile file('../keystores/dayumall.keystore')
+                storePassword '111111'
+            }
+        }
+    // splits {
+    //     abi {
+    //         reset()
+    //         enable enableSeparateBuildPerCPUArchitecture
+    //         universalApk false  // If true, also generate a universal APK
+    //         include "armeabi-v7a", "x86"
+    //         // include "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+    //     }
+    // }
+    buildTypes {
+
+        debug{
+            buildConfigField "String","CODEPUSH_KEY",'"ZX6bj_Kl52RHzXEuMtpNgVHGPVei11e69b01-c637-4862-928a-b30e50cf6261"'
+            applicationIdSuffix ".mookee_one_release"
+            signingConfig signingConfigs.release
+        }
+//        releaseStaging{
+//            buildConfigField "String","CODEPUSH_KEY",'"ZX6bj_Kl52RHzXEuMtpNgVHGPVei11e69b01-c637-4862-928a-b30e50cf6261"'
+//            applicationIdSuffix ".mookee_release"
+//            signingConfig signingConfigs.release
+//        }
+        release {
+            buildConfigField "String","CODEPUSH_KEY",'"Kkz6yNglafwAIyKi0qF5SvxTxvDP11e69b01-c637-4862-928a-b30e50cf6261"'
+            applicationIdSuffix ".mookee_one_release"
+             minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
+        }
+
+    }
+    // applicationVariants are e.g. debug, release
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            // For each separate APK per architecture, set a unique version code as described here:
+            // http://tools.android.com/tech-docs/new-build-system/user-guide/apk-splits
+            def versionCodes = ["armeabi-v7a":1, "x86":2]
+            def abi = output.getFilter(OutputFile.ABI)
+            if (abi != null) {  // null for the universal-debug, universal-release variants
+                output.versionCodeOverride =
+                        versionCodes.get(abi) * 1048576 + defaultConfig.versionCode
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
+
+    implementation project(':react-native-i18n')
+    //implementation project(':jpush-react-native')
+
+    // 添加 jpush 依赖
+    //implementation project(':jcore-react-native')
+
+    implementation project(':react-native-fs')
+    implementation project(':react-native-exit-app')
+
+    //    api project(':react-native-amap-geolocation')
+    implementation project(':react-native-picker')
+    implementation project(':react-native-orientation')
+
+    //    implementation project(':react-native-amap3d')
+    implementation project(':react-native-camera')
+    implementation project(':react-native-video')
+    implementation project(':react-native-splash-screen')
+    implementation project(':react-native-toast')
+    implementation project(':react-native-image-crop-picker')
+    implementation project(':react-native-marquee-label')
+    implementation project(':react-native-code-push')
+    implementation project(':react-native-yunpeng-alipay')
+    implementation project(':react-native-linear-gradient')
+    implementation project(':react-native-wechat')
+    implementation project(':react-native-permissions')
+    implementation project(':react-native-view-shot')
+    implementation project(':react-native-webview')
+    //    implementation project(path:':react-native-i18n',configuration:'default')
+
+    //    implementation project(path:':jpush-react-native',configuration:'default')
+
+    //    implementation project(path:':jcore-react-native',configuration:'default')
+
+    //    implementation project(path:':react-native-exit-app',configuration:'default')
+
+    //    implementation project(path:':react-native-fs',configuration:'default')
+
+    //    implementation project(path:':react-native-amap-geolocation',configuration:'default')
+
+    //    implementation project(path:':react-native-picker',configuration:'default')
+
+    //    implementation project(path:':react-native-orientation',configuration:'default')
+
+    //    implementation project(path:':react-native-amap3d',configuration:'default')
+
+    //    implementation project(path:':react-native-camera',configuration:'default')
+
+    //    implementation project(path:':react-native-video',configuration:'default')
+
+    //    implementation project(path:':react-native-splash-screen',configuration:'default')
+
+    //    implementation project(path:':@remobile/react-native-toast',configuration:'default')
+
+    //    implementation project(path:':react-native-image-crop-picker',configuration:'default')
+
+    //    implementation project(path:':@remobile/react-native-marquee-label',configuration:'default')
+
+    //    implementation project(path:':react-native-code-push',configuration:'default')
+
+    //    implementation project(path:':react-native-yunpeng-alipay',configuration:'default')
+
+    //    implementation project(path:':react-native-linear-gradient',configuration:'default')
+
+    //    implementation project(path:':react-native-wechat',configuration:'default')
+
+    // compile 'com.android.support:appcompat-v7:27.0.1'
+    //implementation 'com.android.support:appcompat-v7:28.0.0'
+    // https://mvnrepository.com/artifact/com.android.support/support-v4
+    //implementation 'com.android.support:support-v4:28.0.0'
+
+    implementation 'com.facebook.react:react-native:+'
+
+    // From node_modules
+    implementation 'com.facebook.fresco:fresco:1.2.0'
+    implementation 'com.facebook.fresco:animated-gif:1.2.0'
+    implementation 'com.facebook.fresco:animated-webp:1.2.0'
+    implementation 'com.facebook.fresco:webpsupport:1.2.0'
+    implementation 'com.twitter.sdk.android:twitter-core:3.1.1'
+    implementation 'com.twitter.sdk.android:tweet-composer:3.1.1'
+
+    //    implementation 'com.facebook.android:facebook-login:[5,6)'
+    configurations.all {
+        // resolutionStrategy.force 'com.android.support:support-annotations:27.1.0'
+        resolutionStrategy.force 'com.android.support:support-annotations:28.0.0'
+    }
+}
+
+
+allprojects {
+    repositories {
+        mavenLocal()
+        google()
+        jcenter()
+        maven {
+            // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+            url "$rootDir/../node_modules/react-native/android"
+             "$rootDir/../node_modules/react-native-amap-geolocation/android"
+        }
+    }
+}
+
+// Run this once to be able to run the application with BUCK
+// puts all compile dependencies into folder libs for BUCK to use
+task copyDownloadableDepsToLibs(type: Copy) {
+    from configurations.compile
+    into 'libs'
+}
+
+def deleteSO() {
+    def rootPath = rootProject.getRootDir().getAbsolutePath() + '/' + project.name
+    delete fileTree(dir: rootPath + "/build/intermediates/exploded-aar/com.facebook.fresco/imagepipeline/" + "0.10.0" + "/jni/", excludes: ['**/armeabi/**', '**/x86/**'])
+}

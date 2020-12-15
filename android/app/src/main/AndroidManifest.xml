@@ -1,0 +1,156 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.slodonapp">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission
+            android:name="android.permission.READ_PHONE_STATE"
+            tools:node="remove"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.MODIFY_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
+
+    <application
+        android:resizeableActivity="false"
+            android:name=".MainApplication"
+            android:allowBackup="false"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:networkSecurityConfig="@xml/network_security_config"
+            android:theme="@style/AppTheme"
+            android:largeHeap="true"
+            android:hardwareAccelerated="true"
+            android:usesCleartextTraffic="true">
+        <meta-data android:name="android.max_aspect" android:value="2.4" />
+        <meta-data
+                android:name="com.amap.api.v2.apikey"
+                android:value="2f6b184cf775efbbc6f8e36b60e25303"/>
+
+        <activity
+                android:name=".MainActivity"
+                android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+                android:label="@string/app_name"
+                android:windowSoftInputMode="adjustPan|stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!--            唤醒APP-->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:host="mookee" android:scheme="mookee" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.MainActivityintent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:host="Register" android:scheme="mookee" />
+                <data android:host="GoodsDetailNew" android:scheme="mookee" />
+            </intent-filter>
+        </activity>
+
+        <activity
+                android:name="com.kbzbank.payment.sdk.callback.CallbackResultActivity"
+                android:exported="true"/>
+
+        <!--<meta-data-->
+                <!--android:name="JPUSH_APPKEY"-->
+                <!--android:value="${JPUSH_APPKEY}"/>-->
+        <!--<meta-data-->
+                <!--android:name="JPUSH_CHANNEL"-->
+                <!--android:value="${JPUSH_CHANNEL}"/>-->
+
+        <!-- 友盟开始 -->
+        <!-- 微信 -->
+        <activity
+                android:name=".mookee_one_release.wxapi.WXEntryActivity"
+                android:configChanges="keyboardHidden|orientation|screenSize"
+                android:exported="true"
+                android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
+        <!-- facebook -->
+        <activity
+                android:name="com.umeng.facebook.FacebookActivity"
+                android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+                android:label="@string/app_name"
+                android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
+        <provider
+                android:authorities="com.facebook.app.FacebookContentProvider793464561074367"
+                android:name="com.umeng.facebook.FacebookContentProvider"
+                android:exported="true"/>
+
+        <meta-data
+                android:name="com.facebook.sdk.ApplicationId"
+                android:value="@string/facebook_app_id"/>
+
+        <!-- 其中 @string/facebook_app_id 是facebook的appid
+        这里需要注意，appid一定要存在string文件中，并以facebook_app_id名字进行保存。 -->
+
+        <!--twitter分享回调结果 -->
+        <receiver
+            android:name=".twitter.TwitterShareReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.twitter.sdk.android.tweetcomposer.UPLOAD_SUCCESS"/>
+                <action android:name="com.twitter.sdk.android.tweetcomposer.UPLOAD_FAILURE"/>
+                <action android:name="com.twitter.sdk.android.tweetcomposer.TWEET_COMPOSE_CANCEL"/>
+            </intent-filter>
+        </receiver>
+
+        <!-- 分享编辑页(只有豆瓣，人人，腾讯微博，领英，twitter需要) -->
+        <activity
+                android:name="com.umeng.socialize.editorpage.ShareActivity"
+                android:excludeFromRecents="true"
+                android:theme="@android:style/Theme.NoTitleBar"/>
+        <meta-data
+                android:name="UMENG_APPKEY"
+                android:value="5e257c86cb23d2a0280006c6"/>
+        <!-- 友盟结束 -->
+
+
+        <!--注册支付宝网页支付，当手机为安装支付宝的时候自动跳转到网页支付。只需要在这配置文件中加下面配置。-->
+        <activity
+                android:name="com.alipay.sdk.app.H5PayActivity"
+                android:configChanges="orientation|keyboardHidden|navigation"
+                android:exported="false"
+                android:screenOrientation="behind"
+                android:windowSoftInputMode="adjustResize|stateHidden"></activity>
+        <activity android:name="com.facebook.react.devsupport.DevSettingsActivity"/>
+
+<!--
+        <service
+                android:name="com.mookee.update.DownloadService"
+                android:exported="false"/>
+
+        <provider
+                android:name="com.mookee.update.UpdateApkFileProvider"
+                android:authorities="${applicationId}.update.provider"
+                android:exported="false"
+                android:grantUriPermissions="true">
+
+            <meta-data
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/update_apk_paths"/>
+
+        </provider>
+-->
+
+    </application>
+
+</manifest>
