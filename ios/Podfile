@@ -1,0 +1,51 @@
+platform :ios, '8.0'
+
+   # The target name is most likely the name of your project.
+   target 'SlodonApp' do     
+     pod 'React', :path => '../node_modules/react-native', :subspecs => [
+       'Core',
+       'CxxBridge', # Include this for RN >= 0.47
+       'DevSupport', # Include this to enable In-App Devmenu if RN >= 0.43
+       'RCTText',
+       'RCTNetwork',
+       'RCTWebSocket', # needed for debugging
+       # Add any other subspecs you want to use in your project
+     ]
+
+   pod 'CodePush', :path => '../node_modules/react-native-code-push'
+   pod 'Picker', :path => '../node_modules/react-native-picker'
+
+     # Explicitly include Yoga if you are using RN >= 0.42.0
+     pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga'
+
+     # Third party deps podspec link
+     pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
+     pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/GLog.podspec'
+     pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
+
+     pod 'react-native-amap3d', path: '../node_modules/react-native-amap3d/lib/ios'
+     pod 'Picker', :path => '../node_modules/react-native-picker'
+      pod 'react-native-amap-geolocation', path: '../node_modules/react-native-amap-geolocation/lib/ios'
+
+     pod 'react-native-orientation', :path => '../node_modules/react-native-orientation'
+
+       pod 'ReactNativePermissions', :path => '../node_modules/react-native-permissions'
+
+
+
+     pod 'JPushRN', :path => '../node_modules/jpush-react-native'
+
+     pod 'JCoreRN', :path => '../node_modules/jcore-react-native'
+
+     pod 'RNI18n', :path => '../node_modules/react-native-i18n'
+
+
+   end
+
+   post_install do |installer|
+     installer.pods_project.targets.each do |target|
+       if target.name == "React"
+         target.remove_from_project
+       end
+     end
+   end
